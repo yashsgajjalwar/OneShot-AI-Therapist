@@ -1,0 +1,7 @@
+{
+  "name": "OneShot: Cognitive AI Therapist",
+  "description": "A next-generation, real-time cognitive emotional wellness assistant that uses multi-modal analysis (audio, text) to provide personalized therapeutic interventions including CBT, PTSD support, and grounding exercises.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
