@@ -9,7 +9,7 @@ import { GoogleUser, MoodEntry, MoodScale, UserProfile, GroundingSource, Message
 import { sendMessageToAI, sendGeneralChatMessage, LiveConversationService } from './services/geminiService';
 
 // TODO: Replace with your actual Google Client ID from the Google Cloud Console
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "416498675853-cbheupn3uesov6f7iguc7us0fbhkiu4h.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "678902263742-jciq9m0odoktjsgorhe9r8of3d4ob6a9.apps.googleusercontent.com";
 
 interface Turn {
     id: number;
@@ -20,13 +20,13 @@ interface Turn {
 
 const fileToGenerativePart = async (file: File) => {
     const base64EncodedDataPromise = new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
+        reader.readAsDataURL(file);
     });
     return {
-      mimeType: file.type,
-      data: await base64EncodedDataPromise,
+        mimeType: file.type,
+        data: await base64EncodedDataPromise,
     };
 };
 
@@ -39,32 +39,32 @@ const parseJwt = (token: string) => {
 };
 
 const LoginScreen: React.FC = () => {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 flex flex-col items-center text-center space-y-8 border border-white/50">
-        <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
-             <span className="text-4xl">🧘</span>
-        </div>
-        <div>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">OneShot</h1>
-          <p className="text-lg text-gray-600 font-medium">Your Personal Cognitive AI Therapist</p>
-        </div>
-        
-        <div className="space-y-4 w-full">
-            <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800">
-                <p>Sign in to track your mood history and save your personalized wellness profile.</p>
-            </div>
-            
-            {/* Google Button Placeholder */}
-            <div id="google-btn" className="flex justify-center h-[40px]"></div>
-        </div>
+    return (
+        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+            <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 flex flex-col items-center text-center space-y-8 border border-white/50">
+                <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+                    <span className="text-4xl">🧘</span>
+                </div>
+                <div>
+                    <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">OneShot</h1>
+                    <p className="text-lg text-gray-600 font-medium">Your Personal Cognitive AI Therapist</p>
+                </div>
 
-        <p className="text-xs text-gray-400 mt-8">
-            Privacy First: Your data is stored locally in your browser.
-        </p>
-      </div>
-    </div>
-  );
+                <div className="space-y-4 w-full">
+                    <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800">
+                        <p>Sign in to track your mood history and save your personalized wellness profile.</p>
+                    </div>
+
+                    {/* Google Button Placeholder */}
+                    <div id="google-btn" className="flex justify-center h-[40px]"></div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-8">
+                    Privacy First: Your data is stored locally in your browser.
+                </p>
+            </div>
+        </div>
+    );
 };
 
 const Header: React.FC<{ user: GoogleUser; onSignOut: () => void }> = ({ user, onSignOut }) => (
@@ -94,14 +94,14 @@ const App: React.FC = () => {
     const [currentAiText, setCurrentAiText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [currentIntervention, setCurrentIntervention] = useState('');
-    
+
     // Updated State: Maps date string to array of entries
     const [moodLogs, setMoodLogs] = useState<Record<string, MoodEntry[]>>({});
     // New State: Health Logs
     const [healthLogs, setHealthLogs] = useState<Record<string, HealthLog>>({});
     // New State: CBT Logs
     const [cbtEntries, setCbtEntries] = useState<CBTEntry[]>([]);
-    
+
     // Chatbot state
     const [isChatbotOpen, setIsChatbotOpen] = useState(false);
     const [chatbotMessages, setChatbotMessages] = useState<Message[]>([
@@ -130,7 +130,7 @@ const App: React.FC = () => {
         };
 
         if ((window as any).google?.accounts) {
-             (window as any).google.accounts.id.initialize({
+            (window as any).google.accounts.id.initialize({
                 client_id: GOOGLE_CLIENT_ID,
                 callback: handleCredentialResponse
             });
@@ -169,12 +169,12 @@ const App: React.FC = () => {
                         migratedLogs[date] = parsedLogs[date];
                     } else {
                         const legacyLog = parsedLogs[date];
-                         migratedLogs[date] = [{
-                             id: `${date}-legacy`,
-                             timestamp: new Date(date).getTime(),
-                             rating: legacyLog.rating,
-                             note: legacyLog.note
-                         }];
+                        migratedLogs[date] = [{
+                            id: `${date}-legacy`,
+                            timestamp: new Date(date).getTime(),
+                            rating: legacyLog.rating,
+                            note: legacyLog.note
+                        }];
                     }
                 });
                 setMoodLogs(migratedLogs);
@@ -184,7 +184,7 @@ const App: React.FC = () => {
             if (savedHealth) {
                 setHealthLogs(JSON.parse(savedHealth));
             }
-            
+
             const savedCBT = localStorage.getItem(`cbtEntries_${authUser.id}`);
             if (savedCBT) {
                 setCbtEntries(JSON.parse(savedCBT));
@@ -194,7 +194,7 @@ const App: React.FC = () => {
             console.error("Could not load data from local storage:", error);
         }
     }, [authUser]);
-    
+
     const handleSaveProfile = useCallback((profile: UserProfile) => {
         if (!authUser) return;
         try {
@@ -207,7 +207,7 @@ const App: React.FC = () => {
 
     const handleLogMood = useCallback((rating: number, note: string) => {
         if (!authUser) return;
-        
+
         const now = new Date();
         const dateStr = now.toISOString().split('T')[0];
         const newEntry: MoodEntry = {
@@ -219,11 +219,11 @@ const App: React.FC = () => {
 
         setMoodLogs(prevLogs => {
             const currentDayEntries = prevLogs[dateStr] || [];
-            const newLogs = { 
-                ...prevLogs, 
-                [dateStr]: [...currentDayEntries, newEntry] 
+            const newLogs = {
+                ...prevLogs,
+                [dateStr]: [...currentDayEntries, newEntry]
             };
-            
+
             try {
                 localStorage.setItem(`moodLogs_${authUser.id}`, JSON.stringify(newLogs));
             } catch (error) {
@@ -237,7 +237,7 @@ const App: React.FC = () => {
         if (!authUser) return;
         const now = new Date();
         const dateStr = now.toISOString().split('T')[0];
-        
+
         const newLog: HealthLog = {
             date: dateStr,
             sleepHours,
@@ -311,9 +311,9 @@ const App: React.FC = () => {
         const logDescription = recentDates.map(date => {
             const entries = moodLogs[date];
             const health = healthLogs[date];
-            
+
             const entriesDesc = entries.map(e => {
-                const time = new Date(e.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const time = new Date(e.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 return `[${time}] ${e.rating}/5 (${MoodScale[e.rating].label})${e.note ? ` - Note: ${e.note}` : ''}`;
             }).join('; ');
 
@@ -328,7 +328,7 @@ const App: React.FC = () => {
         const prompt = `Here is my recent mood history (including health metrics if available):\n${logDescription}\n\nBased on this, can you help me identify any potential patterns, correlations between sleep/activity and my mood, or insights about my mood swings?`;
         handleSendTextMessage(prompt);
     }, [moodLogs, healthLogs, handleSendTextMessage]);
-    
+
     const handleStartConversation = useCallback(() => {
         if (!userProfile) return;
         liveServiceRef.current = new LiveConversationService(userProfile,
@@ -360,13 +360,13 @@ const App: React.FC = () => {
 
     const handleSendEmailReport = useCallback(() => {
         if (!authUser || !userProfile || transcript.length === 0) return;
-    
+
         const sessionDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const subject = `Your OneShot Session Report - ${sessionDate}`;
-        
+
         let body = `Hello ${userProfile.name},\n\n`;
         body += `Here is a summary and transcript of your session on ${sessionDate}.\n\n`;
-        
+
         body += "****************************************\n";
         body += "  CLIENT PROFILE\n";
         body += "****************************************\n";
@@ -390,7 +390,7 @@ const App: React.FC = () => {
             }
             body += '\n';
         });
-        
+
         body += "========================================\n\n";
         body += "We hope this is helpful for your reflection. Keep up the great work on your wellness journey!\n\n";
         body += "Sincerely,\nThe OneShot Team\n\n";
@@ -407,12 +407,12 @@ const App: React.FC = () => {
         if (file) {
             imagePreviewUrl = URL.createObjectURL(file);
         }
-    
-        const newUserMessage: Message = { 
-            id: Date.now().toString(), 
-            text, 
+
+        const newUserMessage: Message = {
+            id: Date.now().toString(),
+            text,
             sender: 'user',
-            image: imagePreviewUrl 
+            image: imagePreviewUrl
         };
         setChatbotMessages(prev => [...prev, newUserMessage]);
         setIsChatbotLoading(true);
@@ -445,7 +445,7 @@ const App: React.FC = () => {
     if (!userProfile) {
         return <OnboardingFlow onComplete={handleSaveProfile} googleUser={authUser} />;
     }
-        
+
     const initialMessage: Turn[] = transcript.length === 0 && !currentUserText && !currentAiText && conversationState === 'idle'
         ? [{ id: 0, user: '', ai: `Hello ${userProfile.name}! I'm OneShot. You can start a voice session or switch to text chat below.` }]
         : [];
@@ -456,7 +456,7 @@ const App: React.FC = () => {
             <Header user={authUser} onSignOut={handleSignOut} />
             <main className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-7 gap-6 h-[calc(100vh-6.5rem)] lg:h-[calc(100vh-8rem)]">
                 <div className="lg:col-span-1 xl:col-span-4 h-full min-h-[500px] lg:min-h-0">
-                    <ConversationView 
+                    <ConversationView
                         transcript={displayedTranscript}
                         currentUserText={currentUserText}
                         currentAiText={currentAiText}
@@ -469,7 +469,7 @@ const App: React.FC = () => {
                     />
                 </div>
                 <div className="lg:col-span-1 xl:col-span-3 h-full min-h-[400px] lg:min-h-0">
-                    <EmotionDashboard 
+                    <EmotionDashboard
                         currentIntervention={currentIntervention}
                         moodLogs={moodLogs}
                         healthLogs={healthLogs}
@@ -496,20 +496,20 @@ const App: React.FC = () => {
             {isChatbotOpen && (
                 <div className="fixed bottom-24 right-6 lg:bottom-28 lg:right-8 w-[90vw] max-w-md h-[70vh] max-h-[600px] z-40 animate-slide-in-right">
                     <div className="h-full flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-gray-200/80">
-                         <div className="flex-shrink-0 flex items-center justify-between p-3 bg-white/80 backdrop-blur-sm border-b border-gray-200/80">
+                        <div className="flex-shrink-0 flex items-center justify-between p-3 bg-white/80 backdrop-blur-sm border-b border-gray-200/80">
                             <h3 className="text-lg font-bold text-gray-800 ml-2">AI Assistant</h3>
                             <button onClick={() => setIsChatbotOpen(false)} className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-full" aria-label="Close chatbot">
                                 <CloseIcon className="w-5 h-5" />
                             </button>
                         </div>
                         <div className="flex-1 bg-gray-100/50 overflow-hidden">
-                           <ChatWindow
+                            <ChatWindow
                                 messages={chatbotMessages}
                                 onSendMessage={handleSendChatbotMessage}
                                 isLoading={isChatbotLoading}
                                 isRecording={false}
-                                onStartRecording={() => {}}
-                                onStopRecording={() => {}}
+                                onStartRecording={() => { }}
+                                onStopRecording={() => { }}
                                 transcription=""
                             />
                         </div>
